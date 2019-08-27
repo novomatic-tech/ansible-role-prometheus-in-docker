@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: Jarek Gajos
+  role_name: prometheus_in_docker
+  description: Install and configure prometheus using docker container.
+  company: Novomatic Technologies Poland
+  license: Apache 2.0
+  min_ansible_version: 2.5
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Ubuntu
+      versions:
+        - all
+  galaxy_tags:
+    - prometheus
+    - prometheuscontainer
+
+dependencies: []

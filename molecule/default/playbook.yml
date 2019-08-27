@@ -1,0 +1,48 @@
+---
+- hosts: centos7
+  any_errors_fatal: yes
+  pre_tasks:
+    - name: Include vars
+      include_vars: vars.yml
+    - name: Install required packages
+      yum:
+        name: '{{ item }}'
+        state: present
+        disable_gpg_check: yes
+      loop:
+        - firewalld
+        - epel-release
+        - python-pip
+    - name: Install docker python modules
+      pip:
+        name: '{{ item }}'
+        state: present
+      loop:
+        - docker
+        - docker-compose
+  roles:
+    - geerlingguy.docker
+    - ansible-role-prometheus-in-docker
+
+- hosts: ubuntu18
+  any_errors_fatal: yes
+  pre_tasks:
+    - name: Include vars
+      include_vars: vars.yml
+    - name: Install required packages
+      apt:
+        name: '{{ item }}'
+        state: present
+      loop:
+        - ufw
+        - python-pip
+    - name: Install docker python modules
+      pip:
+        name: '{{ item }}'
+        state: present
+      loop:
+        - docker
+        - docker-compose
+  roles:
+    - geerlingguy.docker
+    - ansible-role-prometheus-in-docker

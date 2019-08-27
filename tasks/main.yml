@@ -1,0 +1,36 @@
+---
+
+- name: Monitoring - Prometheus | Create folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "prometheus"
+    group: "prometheus"
+    recurse: yes
+  with_items:
+    - /prometheus/data
+    - /prometheus/conf
+
+- name: Monitoring - Prometheus | Template configuration file prometheus.yml
+  template:
+    src: prometheus.yml.j2
+    dest: /prometheus/conf/prometheus.yml
+    owner: prometheus
+    group: prometheus
+    mode: '0644'
+
+- name: Monitoring - Prometheus | Create docker container
+  docker_service:
+    project_name: prometheus
+    definition:
+      version: '2.1'
+      services:
+        orbital-zoo:
+          image: prom/prometheus:v2.11.1
+          container_name: prometheus
+          hostname: prometheus
+          restart: always
+          network_mode: host
+          volumes:
+            - /prometheus/data:/prometheus
+            - /prometheus/conf:/etc/prometheus

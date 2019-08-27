@@ -1,0 +1,23 @@
+---
+language: python
+cache: pip
+sudo: required
+services:
+  - docker
+env:
+  - ANSIBLE='ansible>=2.8.0,<2.9.0'
+install:
+  - pip install ${ANSIBLE} 'ansible-lint>=3.4.15' molecule docker git-semver 'testinfra==3.0.4' jinja2
+script:
+  - molecule test
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: chmod +x .travis/auto.sh && .travis/auto.sh
+  on:
+    branch: master
+branches:
+  only:
+    - master
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

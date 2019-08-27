@@ -1,0 +1,48 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 10s
+  scrape_timeout: 10s
+
+scrape_configs:
+{% if exporter_kafka_enabled is sameas true %}
+{% for node in groups['kafka'] %}
+  - job_name: 'orbital-kafka-exporter-{{loop.index}}'
+    static_configs:
+    - targets:
+      - {{hostvars[node].ansible_host}}:9308
+  - job_name: 'orbital-kafka-jmx-{{loop.index}}'
+    static_configs:
+    - targets:
+      - {{hostvars[node].ansible_host}}:5556
+  - job_name: 'orbital-zoo-exporter-{{loop.index}}'
+    static_configs:
+    - targets:
+      - {{hostvars[node].ansible_host}}:8080
+{% endfor %}
+{% endif %}
+{% if exporter_elasticsearch_enabled is sameas true %}
+  - job_name: 'orbital-elasticsearch-exporter'
+    static_configs:
+    - targets:
+      - {{hostvars['orb-monitoring'].ansible_host}}:9114
+{% endif %}
+{% if exporter_redis_enabled is sameas true %}
+  - job_name: 'orbital-redis-exporter'
+    static_configs:
+      - targets:
+        - redis://{{hostvars['processing-1'].ansible_host}}:6379
+    metrics_path: /scrape
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{hostvars['processing-1'].ansible_host}}:9121
+{% endif %}
+{% if exporter_logstash_enabled is sameas true %}
+  - job_name: 'orbital-logstash-exporter'
+    static_configs:
+      - targets:
+        - {{hostvars['processing-1'].ansible_host}}:9198
+{% endif %}

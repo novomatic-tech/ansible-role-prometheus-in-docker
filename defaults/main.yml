@@ -1,0 +1,6 @@
+---
+
+exporter_kafka_enabled: true
+exporter_redis_enabled: true
+exporter_logstash_enabled: true
+exporter_elasticsearch_enabled: true

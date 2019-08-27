@@ -1,0 +1,55 @@
+---
+dependency:
+  name: galaxy
+  options:
+    force: True
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: centos7
+    groups:
+      - prometheus
+    image: paulfantom/centos-molecule
+    image_version: 7
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  - name: ubuntu18
+    groups:
+      - prometheus
+    image: paulfantom/ubuntu-molecule
+    image_version: 18.04
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  playbooks:
+    prepare: prepare.yml
+    create: create.yml
+    destroy: destroy.yml
+    coverge: playbook.yml
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - dependency
+    - syntax
+    - destroy
+    - create
+    - dependency
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - destroy
