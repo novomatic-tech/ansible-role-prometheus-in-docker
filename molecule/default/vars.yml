@@ -1,2 +1,2 @@
 ---
-redis_persistence_enabled: false
+prometheus_persistence_enabled: false

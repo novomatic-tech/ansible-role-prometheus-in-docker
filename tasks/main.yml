@@ -1,36 +1,46 @@
 ---
 
-- name: Monitoring - Prometheus | Create folders
+- name: Monitoring - Prometheus | Create compose directory
+  file:
+    path: "{{ prometheus_compose_files_path }}"
+    state: directory
+    recurse: yes
+
+- name: Monitoring - Prometheus | Create persistance nad configuration folders
   file:
     path: "{{ item }}"
     state: directory
-    owner: "prometheus"
-    group: "prometheus"
-    recurse: yes
   with_items:
-    - /prometheus/data
-    - /prometheus/conf
+    - "{{ prometheus_configuration_path }}"
+    - "{{ prometheus_persistence_path }}"
+
+- name: Monitoring - Prometheus | Create persistance nad configuration folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "nobody"
+    group: "nogroup"
+  with_items:
+    - "{{ prometheus_configuration_path }}"
+    - "{{ prometheus_persistence_path }}"
+
+- name: Monitoring - Prometheus | Copy docker compose file
+  template:
+    src: docker-compose.prometheus.yml.j2
+    dest: "{{ prometheus_compose_files_path }}/docker-compose.prometheus.yml"
 
 - name: Monitoring - Prometheus | Template configuration file prometheus.yml
   template:
     src: prometheus.yml.j2
-    dest: /prometheus/conf/prometheus.yml
-    owner: prometheus
-    group: prometheus
+    dest: "{{ prometheus_configuration_path }}/prometheus.yml"
+    owner: nobody
+    group: nogroup
     mode: '0644'
+  when: prometheus_custom_config_enabled
 
-- name: Monitoring - Prometheus | Create docker container
-  docker_service:
+- name: Monitoring - Prometheus | Run container
+  docker_compose:
     project_name: prometheus
-    definition:
-      version: '2.1'
-      services:
-        orbital-zoo:
-          image: prom/prometheus:v2.11.1
-          container_name: prometheus
-          hostname: prometheus
-          restart: always
-          network_mode: host
-          volumes:
-            - /prometheus/data:/prometheus
-            - /prometheus/conf:/etc/prometheus
+    project_src: "{{ prometheus_compose_files_path }}"
+    files:
+      - docker-compose.prometheus.yml

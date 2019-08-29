@@ -1,0 +1,14 @@
+version: '2.1'
+services:
+  {{ prometheus_service_name }}:
+    image: {{ prometheus_image }}
+    container_name: {{ prometheus_container_name }}
+    restart: always
+    network_mode: host
+    volumes:
+{% if prometheus_custom_config_enabled %}
+      - {{ prometheus_configuration_path }}:/etc/prometheus
+{% endif %}
+{% if prometheus_persistence_enabled %}
+      - {{ prometheus_persistence_path }}:/prometheus
+{% endif %}

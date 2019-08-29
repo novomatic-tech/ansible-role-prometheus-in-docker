@@ -16,8 +16,32 @@ Example Playbook
 Example playbook usage:
 
 ```
+- hosts: ubuntu18
+  vars:
+    prometheus_persistence_enabled: true
+    prometheus_custom_config_enabled: false
 
+    prometheus_compose_files_path: "/etc/compose-files"
+    prometheus_configuration_path: "{{ prometheus_compose_files_path }}/env/prometheus/conf"
+    prometheus_persistence_path: "{{ prometheus_compose_files_path }}/data/prometheus"
+   ansible_become: yes
+  roles:
+    - geerlingguy.docker
+    - ansible-role-prometheus-in-docker
 ```
+
+If setting `prometheus_custom_config_enabled` flag to true - ansible will look for config template `prometheus.yml.j2` - ansible will use its own precedence order.
+```bash
+    /ansible/roles/prometheus_in_docker/templates/prometheus.yml.j2
+    /ansible/roles/prometheus_in_docker/prometheus.yml.j2
+    /ansible/roles/prometheus_in_docker/tasks/templates/prometheus.yml.j2
+    /ansible/roles/prometheus_in_docker/tasks/prometheus.yml.j2
+    /ansible/playbooks/templates/prometheus.yml.j2
+    /ansible/playbooks/prometheus.yml.j2
+```
+You can provide it:
+- (dirty) Add it explicitly in download role catalogue.
+- Create catalogue in `playbook` directory - `templates` and there create this template file 
 
 License
 -------

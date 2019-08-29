@@ -7,7 +7,7 @@ testinfra_hosts = AnsibleRunner(
 
 
 @pytest.mark.parametrize("dirs", [
-    "/redis/config/"
+    "/etc/compose-files/env/prometheus/conf"
 ])
 def test_directories(host, dirs):
     d = host.file(dirs)

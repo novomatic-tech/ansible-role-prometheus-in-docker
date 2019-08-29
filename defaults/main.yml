@@ -1,6 +1,12 @@
 ---
 
-exporter_kafka_enabled: true
-exporter_redis_enabled: true
-exporter_logstash_enabled: true
-exporter_elasticsearch_enabled: true
+prometheus_persistence_enabled: true
+prometheus_custom_config_enabled: true
+
+prometheus_compose_files_path: "/etc/compose-files"
+prometheus_configuration_path: "{{ prometheus_compose_files_path }}/env/prometheus/conf"
+prometheus_persistence_path: "{{ prometheus_compose_files_path }}/data/prometheus"
+
+prometheus_service_name: prometheus
+prometheus_image: prom/prometheus:v2.11.1
+prometheus_container_name: prometheus
