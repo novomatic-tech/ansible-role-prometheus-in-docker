@@ -1,5 +1,10 @@
 ---
 
+prometheus_user: nobody
+prometheus_uid: 65534
+prometheus_group: nogroup
+prometheus_gid: 65534
+
 prometheus_persistence_enabled: true
 prometheus_custom_config_enabled: true
 

@@ -1,12 +1,26 @@
 ---
 
+- name: Monitoring - Prometheus | Ensure group "{{ prometheus_group }}" exists
+  group:
+    name: "{{ prometheus_group }}"
+    state: present
+    gid: "{{ prometheus_gid }}"
+
+- name: Monitoring - Prometheus | Ensure user "{{ prometheus_user }}" exists
+  user:
+    name: "{{ prometheus_user }}"
+    shell: /bin/nologin
+    state: present
+    group: "{{ prometheus_group }}"
+    uid: "{{ prometheus_uid }}"
+
 - name: Monitoring - Prometheus | Create compose directory
   file:
     path: "{{ prometheus_compose_files_path }}"
     state: directory
     recurse: yes
 
-- name: Monitoring - Prometheus | Create persistance nad configuration folders
+- name: Monitoring - Prometheus | Create persistance and configuration folders
   file:
     path: "{{ item }}"
     state: directory
@@ -14,7 +28,7 @@
     - "{{ prometheus_configuration_path }}"
     - "{{ prometheus_persistence_path }}"
 
-- name: Monitoring - Prometheus | Create persistance nad configuration folders
+- name: Monitoring - Prometheus | Change owner and group of persistance and configuration folders
   file:
     path: "{{ item }}"
     state: directory

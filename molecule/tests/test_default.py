@@ -13,3 +13,12 @@ def test_directories(host, dirs):
     d = host.file(dirs)
     assert d.is_directory
     assert d.exists
+
+@pytest.mark.parametrize("config", [
+    "/etc/compose-files/env/prometheus/conf/prometheus.yml"
+])
+def test_template(host, config):
+    file = host.file(config)
+    assert file.is_file
+    assert file.exists
+
