@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Some basic variables
-GIT_MAIL="rapacz.mateusz@gmail.com"
-GIT_USER="mateuszrapacz"
+GIT_MAIL="jgajos@novomatic-tech.com"
+GIT_USER="jgajos"
 ORGANIZATION=$(echo "$TRAVIS_REPO_SLUG" | awk -F '/' '{print $1}')
 PROJECT=$(echo "$TRAVIS_REPO_SLUG" | awk -F '/' '{print $2}')
 GALAXY_URL="https://galaxy.ansible.com/${ORGANIZATION}/${PROJECT#ansible-}"
